@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 🔄 RESET GLOBAL */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+}
+
+/* 🌙 BODY GLOBAL */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #0f172a; /* Slate-900 */
+  color: #f1f5f9; /* Slate-100 */
+}
+
+/* 🔽 STYLES POUR LES MENUS <select> */
+select {
+  appearance: none;
+  background-color: rgba(245, 222, 179, 0.15); /* Beige transparent */
+  color: beige;
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #94a3b8; /* Slate-400 */
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+select:focus {
+  outline: none;
+  background-color: rgba(245, 222, 179, 0.25);
+  border-color: #cbd5e1; /* Slate-300 */
+}
+
+select option {
+  padding: 0.3rem 1rem;
+  background-color: #1e293b; /* Slate-800 */
+  color: beige;
+}
+
+/* 💨 FLÈCHES DE VENT (COULEUR PAR VITESSE) */
+.wind-arrow {
+  font-size: 26px;
+  text-align: center;
+  line-height: 1;
+  border-radius: 50%;
+  padding: 6px;
+  background-color: white;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.wind-arrow.blue {
+  color: #3b82f6; /* Tailwind blue-500 */
+}
+
+.wind-arrow.orange {
+  color: #f97316; /* Tailwind orange-500 */
+}
+
+.wind-arrow.red {
+  color: #ef4444; /* Tailwind red-500 */
+}
