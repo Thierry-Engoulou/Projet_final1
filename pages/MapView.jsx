@@ -69,13 +69,13 @@ const MapView = ({ data }) => {
               <Popup>
                 <div style={{ width: 250, fontSize: 13 }}>
                   <h4 style={{ marginTop: 0, color: "#007bff" }}> {record.Station}</h4>
-                  <p><b> Date:</b> {formatDate(record.DateTime)}</p>
-                  <p><b> Temperature:</b> {record["AIR TEMPERATURE"]} °C</p>
-                  <p><b> Wind:</b> {windSpeed} m/s – {windDir}° ({getWindDirectionText(windDir)})</p>
-                  <p><b> Humidity:</b> {record["HUMIDITY"]} %</p>
-                  <p><b> Pressure:</b> {record["AIR PRESSURE"]} hPa</p>
-                  {record["TIDE HEIGHT"] && <p><b> Tide:</b> {record["TIDE HEIGHT"]} m</p>}
-                  {record["SURGE"] && <p><b> Surge:</b> {record["SURGE"]} m</p>}
+                  <p><b>📅 Date:</b> {formatDate(record.DateTime)}</p>
+                  <p><b>🌡️Temperature:</b> {record["AIR TEMPERATURE"]} °C</p>
+                  <p><b>💨 Wind:</b> {windSpeed} m/s – {windDir}° ({getWindDirectionText(windDir)})</p>
+                  <p><b>💧 Humidity:</b> {record["HUMIDITY"]} %</p>
+                  <p><b>🧭  Pressure:</b> {record["AIR PRESSURE"]} hPa</p>
+                  {record["TIDE HEIGHT"] && <p><b>🌊 Tide:</b> {record["TIDE HEIGHT"]} m</p>}
+                  {record["SURGE"] && <p><b>⚠️ Surge:</b> {record["SURGE"]} m</p>}
                 </div>
               </Popup>
               <Tooltip direction="top" offset={[0, -10]} permanent>
