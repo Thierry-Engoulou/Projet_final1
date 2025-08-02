@@ -156,28 +156,33 @@ function LiveData() {
           <option value="SM 4">SM 4</option>
         </select>
 
-        {/* Message de téléchargement */}
-        <p className="text-sm text-center text-gray-300 mt-2">
-          🔗 Pour télécharger toutes les données :
-          <br />
-          👉{" "}
+        {/* Nouveau message de téléchargement (simplifié) */}
+        <p className="text-sm text-gray-300 leading-relaxed text-justify mt-2">
+          📥 <b>Procédure pour télécharger les données :</b><br /><br />
+
+          👉 <b>Étape 1 :</b> Cliquez d'abord sur ce lien pour charger les données météo au format brut  :<br />
           <a
             href="https://data-real-time-2.onrender.com/donnees"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-400 underline"
           >
-            API Données Brutes
-          </a>{" "}
-          ou{" "}
+            https://data-real-time-2.onrender.com/donnees
+          </a>
+          <br /><br />
+
+          👉 <b>Étape 2 :</b> Une fois que les données sont affichées, cliquez sur ce lien pour accéder à l’interface de téléchargement :<br />
           <a
             href="https://sitepad-5.onrender.com/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-400 underline"
           >
-            Interface complète
+            https://sitepad-5.onrender.com/
           </a>
+          <br /><br />
+
+          ✅ <i>Suivez bien ces deux étapes dans l’ordre pour que le téléchargement fonctionne correctement.</i>
         </p>
       </div>
 
