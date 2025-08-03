@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Tooltip } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 const MapView = ({ data }) => {
   const [showLegend, setShowLegend] = useState(true);
+  const [loadingWindy, setLoadingWindy] = useState(true);
 
   const latestPerStation = Object.values(
     data.reduce((acc, record) => {
@@ -55,7 +56,7 @@ const MapView = ({ data }) => {
   return (
     <div className="relative space-y-6">
 
-      {/* 🔗 Instructions utilisateur */}
+      {/* 🔗 Liens d'orientation */}
       <div className="bg-blue-50 dark:bg-gray-800 p-4 rounded shadow text-sm">
         <p className="mb-2">📡 Si vous souhaitez <strong>charger les données</strong>, cliquez ici :</p>
         <a
@@ -78,7 +79,7 @@ const MapView = ({ data }) => {
         </a>
       </div>
 
-      {/* 🌍 Carte Leaflet */}
+      {/* 🗺️ Carte Leaflet */}
       <MapContainer center={[4.05, 9.68]} zoom={9} style={{ height: "700px", width: "100%" }}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {latestPerStation.map((record, index) => {
@@ -110,18 +111,22 @@ const MapView = ({ data }) => {
         })}
       </MapContainer>
 
-      {/* 🧭 Légende */}
-      {/* (contenu de légende inchangé) */}
-
       {/* 🌐 Carte Windy */}
       <div className="mt-6">
         <h2 className="text-lg font-semibold mb-2">🌐 Carte météo animée – Windy</h2>
+        {loadingWindy && (
+          <div className="text-center text-sm text-gray-500 dark:text-gray-300">
+            ⏳ Chargement de la carte Windy...
+          </div>
+        )}
         <iframe
           title="Windy Map"
           width="100%"
           height="450"
           src="https://embed.windy.com/embed2.html?lat=4.05&lon=9.68&zoom=9&type=wind"
           frameBorder="0"
+          style={{ display: loadingWindy ? "none" : "block" }}
+          onLoad={() => setLoadingWindy(false)}
         ></iframe>
       </div>
 
