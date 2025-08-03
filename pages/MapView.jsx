@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Tooltip } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -19,7 +19,7 @@ const MapView = ({ data }) => {
   );
 
   const getWindDirectionText = (deg) => {
-    if (deg === undefined || deg === null) return "Unknown";
+    if (deg === undefined || deg === null) return "Inconnu";
     const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
     const index = Math.round(deg / 45) % 8;
     return directions[index];
@@ -27,7 +27,7 @@ const MapView = ({ data }) => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleString("en-US", { hour12: false });
+    return date.toLocaleString("fr-FR", { hour12: false });
   };
 
   const getWindIcon = (angle, speed) => {
@@ -35,7 +35,6 @@ const MapView = ({ data }) => {
     let color = "#3b82f6";
     if (speed >= 3 && speed <= 7) color = "#f97316";
     else if (speed > 7) color = "#8B0000";
-
     const animatedClass = speed > 7 ? "animate-pulse" : "";
 
     return L.divIcon({
@@ -56,26 +55,26 @@ const MapView = ({ data }) => {
   return (
     <div className="relative space-y-6">
 
-      {/* 🔗 Liens d'orientation */}
-      <div className="bg-blue-50 dark:bg-gray-800 p-4 rounded shadow text-sm">
-        <p className="mb-2">📡 Si vous souhaitez <strong>charger les données</strong>, cliquez ici :</p>
+      {/* 📘 Orientation utilisateur */}
+      <div className="bg-blue-100 dark:bg-gray-800 text-sm text-gray-900 dark:text-gray-100 p-4 rounded shadow-md leading-6">
+        <p><strong>👉 Étape 1 :</strong> Cliquez ici pour <b>charger les données météorologiques</b> :</p>
         <a
           href="https://data-real-time-2.onrender.com/donnees"
-          className="text-blue-600 dark:text-blue-400 underline"
           target="_blank"
           rel="noopener noreferrer"
+          className="text-blue-700 underline"
         >
-          🔄 https://data-real-time-2.onrender.com/donnees
+          🔗 https://data-real-time-2.onrender.com/donnees
         </a>
 
-        <p className="mt-4 mb-2">📊 Une fois les données chargées, <strong>cliquez ici pour les visualiser :</strong></p>
+        <p className="mt-3"><strong>👉 Étape 2 :</strong> Une fois les données chargées, cliquez ici pour <b>les visualiser</b> :</p>
         <a
           href="https://padgrah.onrender.com/"
-          className="text-green-600 dark:text-green-400 underline"
           target="_blank"
           rel="noopener noreferrer"
+          className="text-green-700 underline"
         >
-          🌐 https://padgrah.onrender.com/
+          🗺️ https://padgrah.onrender.com/
         </a>
       </div>
 
@@ -94,13 +93,13 @@ const MapView = ({ data }) => {
               <Popup>
                 <div style={{ width: 250, fontSize: 13 }}>
                   <h4 style={{ marginTop: 0, color: "#007bff" }}> {record.Station}</h4>
-                  <p><b>📅 Date:</b> {formatDate(record.DateTime)}</p>
-                  <p><b>🌡️ Temperature:</b> {record["AIR TEMPERATURE"]} °C</p>
-                  <p><b>💨 Wind:</b> {windSpeed} m/s – {windDir}° ({getWindDirectionText(windDir)})</p>
-                  <p><b>💧 Humidity:</b> {record["HUMIDITY"]} %</p>
-                  <p><b>🧭 Pressure:</b> {record["AIR PRESSURE"]} hPa</p>
-                  {record["TIDE HEIGHT"] && <p><b>🌊 Tide:</b> {record["TIDE HEIGHT"]} m</p>}
-                  {record["SURGE"] && <p><b>⚠️ Surge:</b> {record["SURGE"]} m</p>}
+                  <p><b>📅 Date :</b> {formatDate(record.DateTime)}</p>
+                  <p><b>🌡️ Température :</b> {record["AIR TEMPERATURE"]} °C</p>
+                  <p><b>💨 Vent :</b> {windSpeed} m/s – {windDir}° ({getWindDirectionText(windDir)})</p>
+                  <p><b>💧 Humidité :</b> {record["HUMIDITY"]} %</p>
+                  <p><b>🧭 Pression :</b> {record["AIR PRESSURE"]} hPa</p>
+                  {record["TIDE HEIGHT"] && <p><b>🌊 Marée :</b> {record["TIDE HEIGHT"]} m</p>}
+                  {record["SURGE"] && <p><b>⚠️ Surcote :</b> {record["SURGE"]} m</p>}
                 </div>
               </Popup>
               <Tooltip direction="top" offset={[0, -10]} permanent>
@@ -111,12 +110,86 @@ const MapView = ({ data }) => {
         })}
       </MapContainer>
 
-      {/* 🌐 Carte Windy */}
+      {/* 🧭 Légende superposée */}
+      <div className="absolute bottom-4 left-4 z-[1000] w-[280px]">
+        <button
+          onClick={() => setShowLegend((prev) => !prev)}
+          className="w-full flex items-center justify-between px-3 py-2 bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900 text-sm rounded-t shadow hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-300"
+        >
+          <span>{showLegend ? "Masquer la légende" : "Afficher la légende"}</span>
+          <span>{showLegend ? "▲" : "▼"}</span>
+        </button>
+
+        <div
+          className={`overflow-hidden transition-all duration-500 bg-white text-black dark:bg-gray-900 dark:text-white text-sm rounded-b shadow-lg ${
+            showLegend ? "max-h-[500px] p-3" : "max-h-0 p-0"
+          }`}
+        >
+          <div className="space-y-4">
+            <div>
+              <b>💨 Wind Speed</b>
+              <div className="flex items-center gap-2 mt-1">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <path d="M12 2L15 8H9L12 2Z" fill="#3b82f6" />
+                  <line x1="12" y1="8" x2="12" y2="22" stroke="#3b82f6" strokeWidth="2" />
+                </svg>
+                <span>Low (&lt; 3 m/s)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <path d="M12 2L15 8H9L12 2Z" fill="#f97316" />
+                  <line x1="12" y1="8" x2="12" y2="22" stroke="#f97316" strokeWidth="2" />
+                </svg>
+                <span>Moderate (3–7 m/s)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <path d="M12 2L15 8H9L12 2Z" fill="#8B0000" />
+                  <line x1="12" y1="8" x2="12" y2="22" stroke="#8B0000" strokeWidth="2" />
+                </svg>
+                <span>Strong (&gt; 7 m/s)</span>
+              </div>
+            </div>
+
+            <div>
+              <b>🧭 Wind Direction</b>
+              <div className="grid grid-cols-2 gap-x-3 gap-y-2 mt-1">
+                {[
+                  { name: "North", angle: 0 },
+                  { name: "North-East", angle: 45 },
+                  { name: "East", angle: 90 },
+                  { name: "South-East", angle: 135 },
+                  { name: "South", angle: 180 },
+                  { name: "South-West", angle: 225 },
+                  { name: "West", angle: 270 },
+                  { name: "North-West", angle: 315 },
+                ].map((dir, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <span style={{ transform: `rotate(${dir.angle}deg)` }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24">
+                        <path d="M12 2L15 8H9L12 2Z" fill="#555" />
+                        <line x1="12" y1="8" x2="12" y2="22" stroke="#555" strokeWidth="2" />
+                      </svg>
+                    </span>
+                    <span>{dir.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 🌬️ Windy Map */}
       <div className="mt-6">
         <h2 className="text-lg font-semibold mb-2">🌐 Carte météo animée – Windy</h2>
         {loadingWindy && (
-          <div className="text-center text-sm text-gray-500 dark:text-gray-300">
-            ⏳ Chargement de la carte Windy...
+          <div className="flex justify-center items-center h-[100px] text-center text-gray-600 dark:text-gray-200">
+            <svg className="animate-spin h-6 w-6 mr-2 text-blue-600" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            Chargement de la carte Windy...
           </div>
         )}
         <iframe
