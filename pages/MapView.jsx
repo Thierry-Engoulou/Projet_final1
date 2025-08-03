@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Tooltip } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 const MapView = ({ data }) => {
   const [showLegend, setShowLegend] = useState(true);
+  const [loadingWindy, setLoadingWindy] = useState(true);
 
-  //  Garde le dernier enregistrement par station
   const latestPerStation = Object.values(
     data.reduce((acc, record) => {
       const station = record.Station;
@@ -34,7 +34,7 @@ const MapView = ({ data }) => {
     const rotation = `rotate(${angle}deg)`;
     let color = "#3b82f6";
     if (speed >= 3 && speed <= 7) color = "#f97316";
-    else if (speed > 7) color = "#8B0000"; //  rouge foncé
+    else if (speed > 7) color = "#8B0000";
 
     const animatedClass = speed > 7 ? "animate-pulse" : "";
 
@@ -55,6 +55,31 @@ const MapView = ({ data }) => {
 
   return (
     <div className="relative space-y-6">
+
+      {/* 🔗 Liens d'orientation */}
+      <div className="bg-blue-50 dark:bg-gray-800 p-4 rounded shadow text-sm">
+        <p className="mb-2">📡 Si vous souhaitez <strong>charger les données</strong>, cliquez ici :</p>
+        <a
+          href="https://data-real-time-2.onrender.com/donnees"
+          className="text-blue-600 dark:text-blue-400 underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          🔄 https://data-real-time-2.onrender.com/donnees
+        </a>
+
+        <p className="mt-4 mb-2">📊 Une fois les données chargées, <strong>cliquez ici pour les visualiser :</strong></p>
+        <a
+          href="https://padgrah.onrender.com/"
+          className="text-green-600 dark:text-green-400 underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          🌐 https://padgrah.onrender.com/
+        </a>
+      </div>
+
+      {/* 🗺️ Carte Leaflet */}
       <MapContainer center={[4.05, 9.68]} zoom={9} style={{ height: "700px", width: "100%" }}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {latestPerStation.map((record, index) => {
@@ -70,10 +95,10 @@ const MapView = ({ data }) => {
                 <div style={{ width: 250, fontSize: 13 }}>
                   <h4 style={{ marginTop: 0, color: "#007bff" }}> {record.Station}</h4>
                   <p><b>📅 Date:</b> {formatDate(record.DateTime)}</p>
-                  <p><b>🌡️Temperature:</b> {record["AIR TEMPERATURE"]} °C</p>
+                  <p><b>🌡️ Temperature:</b> {record["AIR TEMPERATURE"]} °C</p>
                   <p><b>💨 Wind:</b> {windSpeed} m/s – {windDir}° ({getWindDirectionText(windDir)})</p>
                   <p><b>💧 Humidity:</b> {record["HUMIDITY"]} %</p>
-                  <p><b>🧭  Pressure:</b> {record["AIR PRESSURE"]} hPa</p>
+                  <p><b>🧭 Pressure:</b> {record["AIR PRESSURE"]} hPa</p>
                   {record["TIDE HEIGHT"] && <p><b>🌊 Tide:</b> {record["TIDE HEIGHT"]} m</p>}
                   {record["SURGE"] && <p><b>⚠️ Surge:</b> {record["SURGE"]} m</p>}
                 </div>
@@ -86,80 +111,25 @@ const MapView = ({ data }) => {
         })}
       </MapContainer>
 
-      <div className="absolute bottom-4 left-4 z-[1000] w-[280px]">
-        <button
-          onClick={() => setShowLegend((prev) => !prev)}
-          className="w-full flex items-center justify-between px-3 py-2 bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900 text-sm rounded-t shadow hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-300"
-        >
-          <span>{showLegend ? "Hide Legend" : "Show Legend"}</span>
-          <span>{showLegend ? "" : ""}</span>
-        </button>
-
-        <div
-          className={`overflow-hidden transition-all duration-500 bg-white text-black dark:bg-gray-900 dark:text-white text-sm rounded-b shadow-lg ${
-            showLegend ? "max-h-[500px] p-3" : "max-h-0 p-0"
-          }`}
-        >
-          <div className="space-y-4">
-            <div>
-              <b> Wind Speed</b>
-              <div className="flex items-center gap-2">
-                <span>
-                  <svg width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M12 2L15 8H9L12 2Z" fill="#3b82f6" />
-                    <line x1="12" y1="8" x2="12" y2="22" stroke="#3b82f6" strokeWidth="2" />
-                  </svg>
-                </span>
-                <span>Low (&lt; 3 m/s)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span>
-                  <svg width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M12 2L15 8H9L12 2Z" fill="#f97316" />
-                    <line x1="12" y1="8" x2="12" y2="22" stroke="#f97316" strokeWidth="2" />
-                  </svg>
-                </span>
-                <span>Moderate (3–7 m/s)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span>
-                  <svg width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M12 2L15 8H9L12 2Z" fill="#8B0000" />
-                    <line x1="12" y1="8" x2="12" y2="22" stroke="#8B0000" strokeWidth="2" />
-                  </svg>
-                </span>
-                <span>Strong (&gt; 7 m/s)</span>
-              </div>
-            </div>
-
-            <div>
-              <b> Wind Direction</b>
-              <div className="grid grid-cols-2 gap-x-3 gap-y-2">
-                {[
-                  { name: "North", angle: 0 },
-                  { name: "North-East", angle: 45 },
-                  { name: "East", angle: 90 },
-                  { name: "South-East", angle: 135 },
-                  { name: "South", angle: 180 },
-                  { name: "South-West", angle: 225 },
-                  { name: "West", angle: 270 },
-                  { name: "North-West", angle: 315 },
-                ].map((dir, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <span style={{ transform: `rotate(${dir.angle}deg)` }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24">
-                        <path d="M12 2L15 8H9L12 2Z" fill="#555" />
-                        <line x1="12" y1="8" x2="12" y2="22" stroke="#555" strokeWidth="2" />
-                      </svg>
-                    </span>
-                    <span>{dir.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+      {/* 🌐 Carte Windy */}
+      <div className="mt-6">
+        <h2 className="text-lg font-semibold mb-2">🌐 Carte météo animée – Windy</h2>
+        {loadingWindy && (
+          <div className="text-center text-sm text-gray-500 dark:text-gray-300">
+            ⏳ Chargement de la carte Windy...
           </div>
-        </div>
+        )}
+        <iframe
+          title="Windy Map"
+          width="100%"
+          height="450"
+          src="https://embed.windy.com/embed2.html?lat=4.05&lon=9.68&zoom=9&type=wind"
+          frameBorder="0"
+          style={{ display: loadingWindy ? "none" : "block" }}
+          onLoad={() => setLoadingWindy(false)}
+        ></iframe>
       </div>
+
     </div>
   );
 };
