@@ -31,7 +31,7 @@ const MapView = ({ data }) => {
   };
 
   const getWindIcon = (angle, speed) => {
-    const rotation = `rotate(${angle}deg)`;
+    const rotation = `rotate(${angle - 180}deg)`; // ✅ Convention WMO respectée
     let color = "#3b82f6";
     if (speed >= 3 && speed <= 7) color = "#f97316";
     else if (speed > 7) color = "#8B0000";
@@ -65,29 +65,6 @@ const MapView = ({ data }) => {
         <a href="https://padgrah.onrender.com/" target="_blank" rel="noopener noreferrer" className="text-green-700 underline">
           🗺️ https://padgrah.onrender.com/
         </a>
-      </div>
-
-      {/* 🌬️ 2. Carte Windy animée */}
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold mb-2">🌐 Carte météo animée – Windy</h2>
-        {loadingWindy && (
-          <div className="flex justify-center items-center h-[100px] text-center text-gray-600 dark:text-gray-200">
-            <svg className="animate-spin h-6 w-6 mr-2 text-blue-600" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-            Chargement de la carte Windy...
-          </div>
-        )}
-        <iframe
-          title="Windy Map"
-          width="100%"
-          height="450"
-          src="https://embed.windy.com/embed2.html?lat=4.05&lon=9.68&zoom=9&type=wind"
-          frameBorder="0"
-          style={{ display: loadingWindy ? "none" : "block" }}
-          onLoad={() => setLoadingWindy(false)}
-        ></iframe>
       </div>
 
       {/* 🗺️ 3. Carte Leaflet avec données */}
@@ -152,17 +129,21 @@ const MapView = ({ data }) => {
               <div>
                 <b>🧭 Direction du vent</b>
                 <div className="grid grid-cols-2 gap-x-3 gap-y-2">
-                  {["N", "NE", "E", "SE", "S", "SW", "W", "NW"].map((dir, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <span style={{ transform: `rotate(${idx * 45}deg)` }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24">
-                          <path d="M12 2L15 8H9L12 2Z" fill="#555" />
-                          <line x1="12" y1="8" x2="12" y2="22" stroke="#555" strokeWidth="2" />
-                        </svg>
-                      </span>
-                      <span>{dir}</span>
-                    </div>
-                  ))}
+                  {["N", "NE", "E", "SE", "S", "SW", "W", "NW"].map((dir, idx) => {
+                    const angle = idx * 45;
+                    const correctedAngle = angle - 180; // ✅ WMO: flèche vers la source
+                    return (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span style={{ transform: `rotate(${correctedAngle}deg)` }}>
+                          <svg width="18" height="18" viewBox="0 0 24 24">
+                            <path d="M12 2L15 8H9L12 2Z" fill="#555" />
+                            <line x1="12" y1="8" x2="12" y2="22" stroke="#555" strokeWidth="2" />
+                          </svg>
+                        </span>
+                        <span>{dir}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
