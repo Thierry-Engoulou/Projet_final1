@@ -17,7 +17,7 @@ export default function ForecastPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("https://data-real-time-6.onrender.com/previsions");
+        const res = await fetch("https://data-real-time-2.onrender.com/previsions");
         let text = await res.text();
         text = text.replace(/\bNaN\b/g, "null");
         const parsed = JSON.parse(text);
@@ -157,3 +157,4 @@ export default function ForecastPage() {
     </div>
   );
 }
+
