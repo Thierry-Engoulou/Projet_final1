@@ -13,7 +13,7 @@ const MapView = ({ data }) => {
     return v;
   };
 
-  // ⚡ Calcul optimisé : dernière valeur par station
+  // ⚡ Dernière observation par station
   const latestPerStation = useMemo(() => {
     if (!data || data.length === 0) return [];
     const stations = {};
@@ -36,8 +36,7 @@ const MapView = ({ data }) => {
 
   const formatDate = (dateString) => {
     if (!dateString) return "—";
-    const date = new Date(dateString);
-    return date.toLocaleString("fr-FR", { hour12: false });
+    return new Date(dateString).toLocaleString("fr-FR", { hour12: false });
   };
 
   const getWindIcon = (angle, speed) => {
@@ -48,16 +47,15 @@ const MapView = ({ data }) => {
     if (speed >= 3 && speed <= 7) color = "#f97316";
     else if (speed > 7) color = "#8B0000";
     const animatedClass = speed > 7 ? "animate-pulse" : "";
+
     return L.divIcon({
       className: "custom-icon",
-      html: `
-        <div style="transform:${rotation}; width:36px; height:36px;" class="${animatedClass}">
-          <svg width="36" height="36" viewBox="0 0 24 24">
-            <path d="M12 2L15 8H9L12 2Z" fill="${color}" />
-            <line x1="12" y1="8" x2="12" y2="22" stroke="${color}" stroke-width="2"/>
-          </svg>
-        </div>
-      `,
+      html: `<div style="transform:${rotation}; width:36px; height:36px;" class="${animatedClass}">
+        <svg width="36" height="36" viewBox="0 0 24 24">
+          <path d="M12 2L15 8H9L12 2Z" fill="${color}" />
+          <line x1="12" y1="8" x2="12" y2="22" stroke="${color}" stroke-width="2"/>
+        </svg>
+      </div>`,
       iconSize: [36, 36],
       iconAnchor: [18, 18],
     });
@@ -65,61 +63,43 @@ const MapView = ({ data }) => {
 
   return (
     <div className="relative space-y-6">
-      {/* 📌 Guide utilisateur */}
+      {/* Guide utilisateur */}
       <div className="bg-blue-100 dark:bg-gray-800 text-sm text-gray-900 dark:text-gray-100 p-4 rounded shadow-md leading-6">
         <p><strong>👉 Étape 1 :</strong> Charger les données météo :</p>
-        <a
-          href="https://data-real-time-2.onrender.com/donnees?limit=50"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-700 underline"
-        >
+        <a href="https://data-real-time-2.onrender.com/donnees?limit=50" target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">
           🔗 API météo
         </a>
         <p className="mt-3"><strong>👉 Étape 2 :</strong> Visualiser sur la carte :</p>
-        <a
-          href="https://padgrah.onrender.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-green-700 underline"
-        >
+        <a href="https://padgrah.onrender.com/" target="_blank" rel="noopener noreferrer" className="text-green-700 underline">
           🗺️ Dashboard
         </a>
       </div>
 
-      {/* 🗺️ Carte */}
+      {/* Carte Leaflet */}
       <div className="relative">
         <MapContainer center={[4.05, 9.68]} zoom={9} style={{ height: "700px", width: "100%" }}>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {latestPerStation
-            .filter(r => r.Latitude && r.Longitude)
-            .map((record, index) => {
-              const windDir = parseFloat(cleanValue(record["WIND DIR"]));
-              const windSpeed = parseFloat(cleanValue(record["WIND SPEED"]));
-              return (
-                <Marker
-                  key={index}
-                  position={[record.Latitude, record.Longitude]}
-                  icon={getWindIcon(windDir, windSpeed)}
-                >
-                  <Popup>
-                    <div style={{ width: 250, fontSize: 13 }}>
-                      <h4 style={{ marginTop: 0, color: "#007bff" }}>{record.Station}</h4>
-                      <p><b>📅 Date :</b> {formatDate(record.DateTime)}</p>
-                      <p><b>🌡️ Température :</b> {cleanValue(record["AIR TEMPERATURE"])} °C</p>
-                      <p><b>💨 Vent :</b> {windSpeed} m/s – {windDir}° ({getWindDirectionText(windDir)})</p>
-                      <p><b>💧 Humidité :</b> {cleanValue(record["HUMIDITY"])} %</p>
-                      <p><b>🧭 Pression :</b> {cleanValue(record["AIR PRESSURE"])} hPa</p>
-                      {record["TIDE HEIGHT"] && <p><b>🌊 Marée :</b> {record["TIDE HEIGHT"]} m</p>}
-                      {record["SURGE"] && <p><b>⚠️ Surcote :</b> {record["SURGE"]} m</p>}
-                    </div>
-                  </Popup>
-                  <Tooltip direction="top" offset={[0, -10]} permanent>
-                    <b>{record.Station}</b>
-                  </Tooltip>
-                </Marker>
-              );
-            })}
+          {latestPerStation.filter(r => r.Latitude && r.Longitude).map((record, index) => {
+            const windDir = parseFloat(cleanValue(record["WIND DIR"]));
+            const windSpeed = parseFloat(cleanValue(record["WIND SPEED"]));
+            return (
+              <Marker key={index} position={[record.Latitude, record.Longitude]} icon={getWindIcon(windDir, windSpeed)}>
+                <Popup>
+                  <div style={{ width: 250, fontSize: 13 }}>
+                    <h4 style={{ marginTop: 0, color: "#007bff" }}>{record.Station}</h4>
+                    <p><b>📅 Date :</b> {formatDate(record.DateTime)}</p>
+                    <p><b>🌡️ Température :</b> {cleanValue(record["AIR TEMPERATURE"])} °C</p>
+                    <p><b>💨 Vent :</b> {windSpeed} m/s – {windDir}° ({getWindDirectionText(windDir)})</p>
+                    <p><b>💧 Humidité :</b> {cleanValue(record["HUMIDITY"])} %</p>
+                    <p><b>🧭 Pression :</b> {cleanValue(record["AIR PRESSURE"])} hPa</p>
+                    {record["TIDE HEIGHT"] && <p><b>🌊 Marée :</b> {record["TIDE HEIGHT"]} m</p>}
+                    {record["SURGE"] && <p><b>⚠️ Surcote :</b> {record["SURGE"]} m</p>}
+                  </div>
+                </Popup>
+                <Tooltip direction="top" offset={[0, -10]} permanent><b>{record.Station}</b></Tooltip>
+              </Marker>
+            );
+          })}
         </MapContainer>
       </div>
     </div>
