@@ -37,46 +37,21 @@ function DataTable({ rows }) {
           ))}
         </tr>
       </thead>
-
       <tbody>
         {rows.map((item, index) => (
           <tr key={item._id || index}>
-            <td className="border border-sky-700 rounded-md text-center">
-              {index + 1}
-            </td>
-            <td className="border border-sky-700 rounded-md text-center">
-              {item.Station || "-"}
-            </td>
-            <td className="border border-sky-700 rounded-md text-center">
-              {item.Latitude ?? "-"}
-            </td>
-            <td className="border border-sky-700 rounded-md text-center">
-              {item.Longitude ?? "-"}
-            </td>
-            <td className="border border-sky-700 rounded-md text-center">
-              {item.DateTime || "-"}
-            </td>
-            <td className="border border-sky-700 rounded-md text-center">
-              {item["TIDE HEIGHT"] ?? "-"}
-            </td>
-            <td className="border border-sky-700 rounded-md text-center">
-              {item["WIND SPEED"] ?? "-"}
-            </td>
-            <td className="border border-sky-700 rounded-md text-center">
-              {item["WIND DIR"] ?? "-"}
-            </td>
-            <td className="border border-sky-700 rounded-md text-center">
-              {item["AIR PRESSURE"] ?? "-"}
-            </td>
-            <td className="border border-sky-700 rounded-md text-center">
-              {item["AIR TEMPERATURE"] ?? "-"}
-            </td>
-            <td className="border border-sky-700 rounded-md text-center">
-              {item["DEWPOINT"] ?? "-"}
-            </td>
-            <td className="border border-sky-700 rounded-md text-center">
-              {item["HUMIDITY"] ?? "-"}
-            </td>
+            <td className="border border-sky-700 rounded-md text-center">{index + 1}</td>
+            <td className="border border-sky-700 rounded-md text-center">{item.Station ?? "-"}</td>
+            <td className="border border-sky-700 rounded-md text-center">{item.Latitude ?? "-"}</td>
+            <td className="border border-sky-700 rounded-md text-center">{item.Longitude ?? "-"}</td>
+            <td className="border border-sky-700 rounded-md text-center">{item.DateTime ?? "-"}</td>
+            <td className="border border-sky-700 rounded-md text-center">{item["TIDE HEIGHT"] ?? "-"}</td>
+            <td className="border border-sky-700 rounded-md text-center">{item["WIND SPEED"] ?? "-"}</td>
+            <td className="border border-sky-700 rounded-md text-center">{item["WIND DIR"] ?? "-"}</td>
+            <td className="border border-sky-700 rounded-md text-center">{item["AIR PRESSURE"] ?? "-"}</td>
+            <td className="border border-sky-700 rounded-md text-center">{item["AIR TEMPERATURE"] ?? "-"}</td>
+            <td className="border border-sky-700 rounded-md text-center">{item["DEWPOINT"] ?? "-"}</td>
+            <td className="border border-sky-700 rounded-md text-center">{item["HUMIDITY"] ?? "-"}</td>
           </tr>
         ))}
       </tbody>
@@ -88,7 +63,6 @@ function LiveData() {
   const [data, setData] = useState(null);
   const [station, setStation] = useState("all");
 
-  // ⚡ Chargement rapide + protection NaN
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -99,25 +73,19 @@ function LiveData() {
 
         let text = res.data;
 
-        // 🔧 Corriger JSON cassé (NaN)
+        // 🔧 Corriger JSON cassé (NaN → null)
         text = text.replace(/NaN/g, "null");
 
         const parsed = JSON.parse(text);
 
-        // ⚡ nettoyage rapide
+        // ⚡ nettoyage rapide pour toutes les valeurs
         const cleaned = parsed.map((row) => {
           const obj = { ...row };
-
           Object.keys(obj).forEach((k) => {
-            if (
-              obj[k] === null ||
-              obj[k] === undefined ||
-              Number.isNaN(obj[k])
-            ) {
+            if (obj[k] === undefined || obj[k] === null || Number.isNaN(obj[k])) {
               obj[k] = null;
             }
           });
-
           return obj;
         });
 
@@ -129,57 +97,38 @@ function LiveData() {
     };
 
     fetchData();
-
-    // 🔁 refresh automatique toutes les 5 minutes
-    const interval = setInterval(fetchData, 300000);
-
+    const interval = setInterval(fetchData, 300000); // 🔁 refresh toutes les 5 min
     return () => clearInterval(interval);
   }, []);
 
   const filteredData = useMemo(() => {
     if (!data) return [];
-    return station === "all"
-      ? data
-      : data.filter((item) => item.Station === station);
+    return station === "all" ? data : data.filter((item) => item.Station === station);
   }, [data, station]);
 
-  const visibleData = useMemo(() => {
-    return filteredData.slice(0, 30);
-  }, [filteredData]);
+  const visibleData = useMemo(() => filteredData.slice(0, 30), [filteredData]);
 
   const getDirectionText = (deg) => {
     const dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
-
     if (!deg || isNaN(deg)) return "Inconnu";
-
     const index = Math.floor((deg + 22.5) / 45) % 8;
-
     return dirs[index];
   };
 
   const latestData = useMemo(() => {
     if (!data) return [];
-
-    const sorted = [...data].sort(
-      (a, b) => new Date(b.DateTime) - new Date(a.DateTime)
-    );
-
-    return sorted.slice(0, 3);
+    return [...data]
+      .sort((a, b) => new Date(b.DateTime) - new Date(a.DateTime))
+      .slice(0, 3);
   }, [data]);
 
   if (!data) return <Spinner />;
 
   return (
     <div className="p-4 bg-gradient-to-br from-slate-900 to-black text-white min-h-screen">
-
       <div className="text-center max-w-3xl mx-auto mb-6">
-        <h1 className="text-xl font-bold mb-3">
-          Données Météorologiques en Temps Réel
-        </h1>
-        <p>
-          Les observations sont collectées toutes les 10 minutes au Port
-          Autonome de Douala.
-        </p>
+        <h1 className="text-xl font-bold mb-3">Données Météorologiques en Temps Réel</h1>
+        <p>Les observations sont collectées toutes les 10 minutes au Port Autonome de Douala.</p>
       </div>
 
       {/* Résumé météo */}
@@ -187,18 +136,12 @@ function LiveData() {
         {latestData.map((row, idx) => (
           <div key={idx} className="bg-white text-black rounded-xl p-4 shadow-lg">
             <h2 className="font-bold mb-2">📍 Station {row.Station}</h2>
-
             <ul className="text-sm space-y-1">
-              <li>
-                🕒 {row.DateTime ? format(new Date(row.DateTime), "yyyy-MM-dd HH:mm:ss") : "-"}
-              </li>
+              <li>🕒 {row.DateTime ? format(new Date(row.DateTime), "yyyy-MM-dd HH:mm:ss") : "-"}</li>
               <li>🌡️ Température : {row["AIR TEMPERATURE"] ?? "-"} °C</li>
               <li>💧 Humidité : {row["HUMIDITY"] ?? "-"} %</li>
               <li>💨 Vent : {row["WIND SPEED"] ?? "-"} m/s</li>
-              <li>
-                🧭 Direction : {row["WIND DIR"] ?? "-"}° (
-                {getDirectionText(parseFloat(row["WIND DIR"]))})
-              </li>
+              <li>🧭 Direction : {row["WIND DIR"] ?? "-"}° ({getDirectionText(parseFloat(row["WIND DIR"]))})</li>
               <li>⚖️ Pression : {row["AIR PRESSURE"] ?? "-"} hPa</li>
               {row["TIDE HEIGHT"] && <li>🌊 Marée : {row["TIDE HEIGHT"]} m</li>}
             </ul>
@@ -206,10 +149,9 @@ function LiveData() {
         ))}
       </div>
 
-      {/* Filtre */}
+      {/* Filtre station */}
       <div className="max-w-md mx-auto flex flex-col items-center gap-3 mb-6">
         <label className="text-sm font-semibold">Filtrer par station</label>
-
         <select
           className="bg-transparent border border-gray-600 px-3 py-1 rounded"
           value={station}
@@ -226,17 +168,12 @@ function LiveData() {
       {/* Tableau */}
       <div className="max-w-6xl mx-auto px-2">
         <DataTable rows={visibleData} />
-
         {filteredData.length > 30 && (
-          <p className="text-center text-gray-400 text-sm">
-            ⚠️ Affichage limité à 30 lignes.
-          </p>
+          <p className="text-center text-gray-400 text-sm">⚠️ Affichage limité à 30 lignes.</p>
         )}
       </div>
-
     </div>
   );
 }
 
 export default LiveData;
-
