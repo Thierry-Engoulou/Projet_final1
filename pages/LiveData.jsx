@@ -3,7 +3,7 @@ import axios from "axios";
 import Spinner from "../components/Spinner";
 import { format } from "date-fns";
 
-const API_URL = "https://data-real-time-6.onrender.com/donnees?limit=50";
+const API_URL = "https://data-real-time-2.onrender.com/donnees?limit=50";
 
 function DataTable({ rows }) {
   if (!rows.length)
@@ -239,3 +239,4 @@ function LiveData() {
 }
 
 export default LiveData;
+
