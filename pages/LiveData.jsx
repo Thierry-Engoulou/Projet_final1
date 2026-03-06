@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from "react";
-import axios from "axios";
 import Spinner from "../components/Spinner";
 import { format } from "date-fns";
 
@@ -41,100 +40,204 @@ function DataTable({ rows }) {
 }
 
 function LiveData() {
+
   const [data, setData] = useState(null);
   const [station, setStation] = useState("all");
 
   useEffect(() => {
+
     const fetchData = async () => {
+
       try {
-        const res = await axios.get(API_URL, { responseType: "text", timeout: 10000 });
-        let text = res.data;
+
+        const response = await fetch(API_URL);
+
+        let text = await response.text();
+
         // 🔧 Corriger JSON cassé (NaN → null)
         text = text.replace(/NaN/g, "null");
+
         const parsed = JSON.parse(text);
+
         // ⚡ nettoyage rapide
         const cleaned = parsed.map(row => {
+
           const obj = { ...row };
+
           Object.keys(obj).forEach(k => {
-            if (obj[k] === undefined || obj[k] === null || Number.isNaN(obj[k])) obj[k] = null;
+
+            if (
+              obj[k] === undefined ||
+              obj[k] === null ||
+              Number.isNaN(obj[k])
+            ) {
+              obj[k] = null;
+            }
+
           });
+
           return obj;
+
         });
+
         setData(cleaned);
+
       } catch (err) {
+
         console.error("Erreur API :", err);
         setData([]);
+
       }
+
     };
+
     fetchData();
-    const interval = setInterval(fetchData, 300000); // 🔁 refresh toutes les 5 min
+
+    const interval = setInterval(fetchData, 300000);
+
     return () => clearInterval(interval);
+
   }, []);
 
   const filteredData = useMemo(() => {
+
     if (!data) return [];
-    return station === "all" ? data : data.filter(item => item.Station === station);
+
+    return station === "all"
+      ? data
+      : data.filter(item => item.Station === station);
+
   }, [data, station]);
 
   const visibleData = useMemo(() => filteredData.slice(0, 30), [filteredData]);
 
   const getDirectionText = (deg) => {
+
     const dirs = ["N","NE","E","SE","S","SW","W","NW"];
+
     if (!deg || isNaN(deg)) return "Inconnu";
+
     return dirs[Math.floor((deg + 22.5)/45) % 8];
+
   };
 
   const latestData = useMemo(() => {
+
     if (!data) return [];
-    return [...data].sort((a,b) => new Date(b.DateTime) - new Date(a.DateTime)).slice(0, 3);
+
+    return [...data]
+      .sort((a,b) => new Date(b.DateTime) - new Date(a.DateTime))
+      .slice(0, 3);
+
   }, [data]);
 
   if (!data) return <Spinner />;
 
   return (
+
     <div className="p-4 bg-gradient-to-br from-slate-900 to-black text-white min-h-screen">
+
       <div className="text-center max-w-3xl mx-auto mb-6">
-        <h1 className="text-xl font-bold mb-3">Données Météorologiques en Temps Réel</h1>
-        <p>Les observations sont collectées toutes les 10 minutes au Port Autonome de Douala.</p>
+
+        <h1 className="text-xl font-bold mb-3">
+          Données Météorologiques en Temps Réel
+        </h1>
+
+        <p>
+          Les observations sont collectées toutes les 10 minutes au
+          Port Autonome de Douala.
+        </p>
+
       </div>
 
       {/* Résumé météo */}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-6xl mx-auto mb-6">
+
         {latestData.map((row, idx) => (
+
           <div key={idx} className="bg-white text-black rounded-xl p-4 shadow-lg">
-            <h2 className="font-bold mb-2">📍 Station {row.Station}</h2>
+
+            <h2 className="font-bold mb-2">
+              📍 Station {row.Station}
+            </h2>
+
             <ul className="text-sm space-y-1">
-              <li>🕒 {row.DateTime ? format(new Date(row.DateTime),"yyyy-MM-dd HH:mm:ss"):"-"}</li>
+
+              <li>
+                🕒 {row.DateTime
+                  ? format(new Date(row.DateTime),"yyyy-MM-dd HH:mm:ss")
+                  : "-"}
+              </li>
+
               <li>🌡️ Température : {row["AIR TEMPERATURE"] ?? "-"} °C</li>
+
               <li>💧 Humidité : {row["HUMIDITY"] ?? "-"} %</li>
+
               <li>💨 Vent : {row["WIND SPEED"] ?? "-"} m/s</li>
-              <li>🧭 Direction : {row["WIND DIR"] ?? "-"}° ({getDirectionText(parseFloat(row["WIND DIR"]))})</li>
+
+              <li>
+                🧭 Direction :
+                {row["WIND DIR"] ?? "-"}°
+                ({getDirectionText(parseFloat(row["WIND DIR"]))})
+              </li>
+
               <li>⚖️ Pression : {row["AIR PRESSURE"] ?? "-"} hPa</li>
-              {row["TIDE HEIGHT"] && <li>🌊 Marée : {row["TIDE HEIGHT"]} m</li>}
+
+              {row["TIDE HEIGHT"] &&
+                <li>🌊 Marée : {row["TIDE HEIGHT"]} m</li>
+              }
+
             </ul>
+
           </div>
+
         ))}
+
       </div>
 
       {/* Filtre station */}
+
       <div className="max-w-md mx-auto flex flex-col items-center gap-3 mb-6">
-        <label className="text-sm font-semibold">Filtrer par station</label>
-        <select className="bg-transparent border border-gray-600 px-3 py-1 rounded" value={station} onChange={(e)=>setStation(e.target.value)}>
+
+        <label className="text-sm font-semibold">
+          Filtrer par station
+        </label>
+
+        <select
+          className="bg-transparent border border-gray-600 px-3 py-1 rounded"
+          value={station}
+          onChange={(e)=>setStation(e.target.value)}
+        >
+
           <option value="all">Toutes les stations</option>
           <option value="SM 1">SM 1</option>
           <option value="SM 2">SM 2</option>
           <option value="SM 3">SM 3</option>
           <option value="SM 4">SM 4</option>
+
         </select>
+
       </div>
 
       {/* Tableau */}
+
       <div className="max-w-6xl mx-auto px-2">
+
         <DataTable rows={visibleData} />
-        {filteredData.length>30 && <p className="text-center text-gray-400 text-sm">⚠️ Affichage limité à 30 lignes.</p>}
+
+        {filteredData.length>30 &&
+          <p className="text-center text-gray-400 text-sm">
+            ⚠️ Affichage limité à 30 lignes.
+          </p>
+        }
+
       </div>
+
     </div>
+
   );
+
 }
 
 export default LiveData;
