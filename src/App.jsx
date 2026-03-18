@@ -8,6 +8,7 @@ import MapView from "../pages/MapView";
 import Alerts from "../pages/Alerts";
 import Header from "../components/Header";
 import NotFound from "../pages/NotFound";
+import ForecastPAD from "../pages/ForecastPAD";
 import "leaflet/dist/leaflet.css";
 
 export default function App() {
@@ -63,6 +64,7 @@ export default function App() {
             <Route path="/map" element={<MapView data={weatherData} />} />
             <Route path="/forecast" element={<Forecast />} />
             <Route path="/alerts" element={<Alerts />} />
+            <Route path="/forecast-pad" element={<ForecastPAD />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

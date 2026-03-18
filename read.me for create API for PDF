@@ -1,0 +1,175 @@
+# Guide Étape par Étape : Créer un Backend pour Uploader des Fichiers (PDF/Word)
+
+Puisque vous n'avez pas le code de votre API actuelle (hébergée sur Render), nous allons devoir recréer une **nouvelle API (Backend)** dédiée à la réception et la sauvegarde de vos fichiers PDF, Word et PowerPoint.
+
+Voici comment procéder, étape par étape.
+
+---
+
+## 🏗️ Étape 1 : Comprendre l'Architecture
+Voici comment le système va fonctionner :
+1. **Frontend (Ce projet actuel) :** Vous cliquez sur le bouton "Uploader le Reçu" et vous mettez le mot de passe "Admin".
+2. **Backend (La nouvelle API à créer) :** Reçoit le fichier.
+3. **Cloudinary (Stockage en ligne) :** Le backend envoie le fichier à Cloudinary. Cloudinary renvoie un **Lien (URL)** (ex: `https://cloudinary.com/.../recu.pdf`).
+4. **MongoDB (Base de données) :** Le backend sauvegarde le Lien (URL) et la date du jour dans MongoDB.
+5. **Frontend :** Demande à MongoDB "Donne-moi les reçus d'aujourd'hui" et affiche les Liens.
+
+---
+
+## 💻 Étape 2 : Créer le Projet Backend sur votre ordinateur
+
+Ouvrez un **nouveau terminal** (pas celui de votre projet frontend) et créez un dossier pour ce nouveau projet :
+
+```bash
+# 1. Créer le dossier
+mkdir backend_meteo_documents
+cd backend_meteo_documents
+
+# 2. Initialiser le projet Node.js
+npm init -y
+
+# 3. Installer les librairies nécessaires
+npm install express mongoose multer dotenv cors
+npm install cloudinary multer-storage-cloudinary
+```
+
+- `express` : Pour créer l'API Web.
+- `mongoose` : Pour communiquer avec MongoDB.
+- `multer` et `cloudinary` : Pour recevoir et stocker les fichiers.
+- `cors` : Pour autoriser votre Frontend React à communiquer avec ce Backend.
+
+---
+
+## 🔑 Étape 3 : Créer un compte Cloudinary
+1. Allez sur **[cloudinary.com](https://cloudinary.com/)** et créez un compte gratuit.
+2. Sur votre tableau de bord (Dashboard), copiez vos identifiants :
+   - `Cloud Name`
+   - `API Key`
+   - `API Secret`
+
+---
+
+## 📝 Étape 4 : Le Code du Backend (Fichier `index.js`)
+
+Dans votre dossier `backend_meteo_documents`, créez un fichier `index.js` et un fichier [.env](file:///C:/Users/RODRIGUE%20SINGOR/data_real_time/.env).
+
+**Fichier [.env](file:///C:/Users/RODRIGUE%20SINGOR/data_real_time/.env) :**
+```env
+PORT=5000
+MONGODB_URI=votre_lien_mongodb_ici (le même que celui dans data_real_time)
+CLOUDINARY_CLOUD_NAME=votre_cloud_name
+CLOUDINARY_API_KEY=votre_api_key
+CLOUDINARY_API_SECRET=votre_api_secret
+ADMIN_PASSWORD=votre_mot_de_passe_secret
+```
+
+**Fichier `index.js` (Le cœur de l'API) :**
+```javascript
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const multer = require('multer');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// 1. Connexion à MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('✅ Connecté à MongoDB'))
+  .catch(err => console.error('❌ Erreur MongoDB:', err));
+
+// 2. Modèle de Données (Ce qu'on sauvegarde)
+const DocumentSchema = new mongoose.Schema({
+  nom: String,
+  urlFichier: String,
+  dateAjout: { type: Date, default: Date.now }
+});
+const Document = mongoose.model('Document', DocumentSchema);
+
+// 3. Configuration Cloudinary (Pour stocker le PDF)
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'meteo_documents', // Dossier sur Cloudinary
+    resource_type: 'raw', // "raw" est obligatoire pour les PDF, Word, PPT
+    allowed_formats: ['pdf', 'doc', 'docx', 'ppt', 'pptx']
+  }
+});
+const upload = multer({ storage: storage });
+
+// ==========================================
+// 🚀 LES ROUTES DE L'API
+// ==========================================
+
+// A. Route pour LIRE les documents (Public)
+app.get('/api/documents', async (req, res) => {
+  try {
+    const documents = await Document.find().sort({ dateAjout: -1 }).limit(10); // Les 10 derniers
+    res.json(documents);
+  } catch (err) {
+    res.status(500).json({ erreur: "Impossible de récupérer les documents" });
+  }
+});
+
+// B. Route pour UPLOADER un document (Protégé par Mot de passe)
+app.post('/api/upload', upload.single('fichier'), async (req, res) => {
+  // 1. Vérifier le mot de passe
+  if (req.headers.authorization !== `Bearer ${process.env.ADMIN_PASSWORD}`) {
+    return res.status(403).json({ erreur: "Accès refusé. Mot de passe incorrect." });
+  }
+
+  // 2. Vérifier si un fichier a bien été envoyé
+  if (!req.file) {
+    return res.status(400).json({ erreur: "Aucun fichier fourni." });
+  }
+
+  try {
+    // 3. Sauvegarder l'URL du fichier (renvoyée par Cloudinary) dans MongoDB
+    const nouveauDoc = new Document({
+      nom: req.file.originalname,
+      urlFichier: req.file.path // C'est le lien URL sécurisé !
+    });
+    await nouveauDoc.save();
+
+    res.json({ message: "Fichier uploadé avec succès !", document: nouveauDoc });
+  } catch (err) {
+    res.status(500).json({ erreur: "Erreur lors de la sauvegarde." });
+  }
+});
+
+// Lancer le serveur
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 API Document démarrée sur http://localhost:${PORT}`);
+});
+```
+
+---
+
+## ☁️ Étape 5 : Tester et Déployer
+1. Sur votre ordinateur, tapez `node index.js`. Le serveur va démarrer et se connecter à MongoDB.
+2. Une fois que vous voyez `✅ Connecté à MongoDB`, vous pouvez héberger ce backend sur **Render.com** (exactement comme vous l'avez fait pour votre première API `data-real-time-2`).
+3. Vous aurez alors un nouveau lien, par exemple `https://meteo-documents-api.onrender.com`.
+
+---
+
+## 🎨 Étape 6 : Le Frontend (Ce que je ferai)
+Dès que votre Backend sera en ligne, je coderai la page React sur votre ordinateur en utilisant le code suivant :
+- Le bouton "Uploader" demandera votre mot de passe secret.
+- S'il est bon, il enverra le fichier PDF à `https://meteo-documents-api.onrender.com/api/upload`.
+- La page affichera tous les PDF de la veille et du jour en appelant `https://meteo-documents-api.onrender.com/api/documents`.
+
+### De quoi avons-nous besoin immédiatement ?
+Voulez-vous que :
+1. Vous créiez d'abord ce projet backend (`backend_meteo_documents`) pour que nous le mettions en place ensemble ?
+2. **OU** préférez-vous que je code l'interface visuelle dans React dès maintenant, avec de "fausses données" pour le moment, en attendant que l'API soit prête plus tard ?

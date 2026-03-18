@@ -27,12 +27,12 @@ export default function Home() {
         </p>
       </header>
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl w-full">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-5xl w-full">
         <FeatureCard
           href={"/forecast"}
           icon={<FaCloudSun size={40} className="text-yellow-400" />}
           title="Prévisions Précises"
-          description="Consultez les prévisions météorologiques pour les jours à venir avec des données fiables  et régulièrement mises à jour."
+          description="Consultez les prévisions météorologiques pour les jours à venir avec des données fiables et régulièrement mises à jour."
         />
         <FeatureCard
           href={"/map"}
@@ -53,11 +53,19 @@ export default function Home() {
           title="Alertes & Conseils"
           description="Recevez des alertes sur les conditions météorologiques dangereuses accompagnées de recommandations d’experts."
         />
+
+        <FeatureCard
+          href={"/forecast-pad"}
+          icon={<FaCloudSun size={40} className="text-blue-400" />}
+          title="Forecast PAD"
+          description="Accédez aux bulletins de prévisions maritimes officiels du PAD au format PDF pour une navigation sécurisée."
+        />
       </section>
 
       <footer className="mt-20 text-center text-gray-400 max-w-md">
         <p>© {new Date().getFullYear()} MeteoExpert. Tous droits réservés.</p>
       </footer>
+
     </div>
   );
 }
