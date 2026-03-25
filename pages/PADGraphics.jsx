@@ -205,12 +205,14 @@ export default function PADGraphics() {
         }
       });
 
+      const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
       return (
         <div key={p} className={`mb-10 p-6 rounded-2xl shadow-lg border ${p === "TIDE_HEIGHT" ? "bg-slate-900 border-slate-700 text-white" : "bg-white border-gray-200 text-black"}`}>
           <Line options={{ 
             responsive: true, animation: false,
             plugins: { 
-                title: { display: true, text: p.replace("_", " "), color: p==='TIDE_HEIGHT'?'white':'black', font: { size: 18, weight: 'bold' } },
+                title: { display: true, text: `${p.replace("_", " ")} - ${today}`, color: p==='TIDE_HEIGHT'?'white':'black', font: { size: 18, weight: 'bold' } },
                 legend: { labels: { color: p==='TIDE_HEIGHT'?'white':'black' } }
             },
             scales: { 
@@ -287,8 +289,22 @@ export default function PADGraphics() {
                   </div>
                )}
 
-               <div className="grid grid-cols-1 gap-8">
+                <div className="grid grid-cols-1 gap-8">
                   {renderGraphs(activeTab === '1_day' ? data1d : data7d)}
+               </div>
+
+               {/* FOOTER DOWNLOAD */}
+               <div className="mt-20 p-10 bg-blue-600 rounded-3xl text-center shadow-2xl shadow-blue-500/20">
+                  <h3 className="text-2xl font-black mb-4">Besoin des données brutes ?</h3>
+                  <p className="text-blue-100 mb-8 max-w-2xl mx-auto">Pour télécharger les relevés complets au format Excel ou NetCDF, veuillez utiliser notre portail sécurisé de téléchargement.</p>
+                  <a 
+                    href="https://padgrah.onrender.com/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-block bg-white text-blue-600 px-10 py-4 rounded-2xl font-black text-lg hover:bg-slate-100 transition-all active:scale-95 shadow-xl"
+                  >
+                    🚀 CLIQUER ICI POUR TÉLÉCHARGER
+                  </a>
                </div>
             </section>
           )}

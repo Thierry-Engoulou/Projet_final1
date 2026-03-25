@@ -1,0 +1,40 @@
+# Synthèse de la migration : Dashboard PAD vers React
+
+Nous avons réussi à porter l'intégralité de votre dashboard Streamlit ([site_PAD.py](file:///c:/Users/RODRIGUE%20SINGOR/PADgrah/site_PAD.py)) vers votre application React. Le dashboard est désormais plus rapide, plus fluide (parallélisation) et intègre tous vos outils scientifiques.
+
+## ✅ Ce qui a été accompli
+- **Migration Visuelle** : Recréation fidèle de l'interface (Tabs 1J/7J, barre latérale, expanders).
+- **Synchronisation Intelligente** : Récupération des données par paquets (chunks) pour éviter les Timeouts du serveur.
+- **Modèle Harmonique de Marée** : Implémentation du calcul sinusoïdal par moindres carrés (Least Squares) en Javascript.
+- **Filtrage Scientifique (IQR)** : Nettoyage automatique des données aberrantes pour des graphiques propres.
+- **Intégration Navigation** : Ajout du lien "Visualisation du PAD" dans la Sidebar, le Header et la Home.
+
+## 🚀 Comment mettre à jour GitHub vous-même (Étape par étape)
+
+Pour envoyer vos futures modifications sur GitHub, suivez ces 3 étapes simples dans votre terminal (PowerShell ou CMD) :
+
+### 1. Préparer les fichiers (`git add`)
+Cette commande dit à Git : "Je veux inclure ces changements dans mon prochain envoi".
+```powershell
+git add .
+```
+*(Le point `.` signifie "tous les fichiers modifiés".)*
+
+### 2. Signer les changements (`git commit`)
+Cette commande enregistre une version locale de votre travail avec un message explicatif.
+```powershell
+git commit -m "Description de ce que vous avez changé"
+```
+
+### 3. Envoyer sur Internet (`git push`)
+Cette commande envoie enfin vos changements vers le serveur GitHub.
+```powershell
+git push origin main
+```
+
+---
+> [!TIP]
+> **Vérifiez toujours votre état** : Avant de commencer, tapez `git status` pour voir quels fichiers ont été modifiés.
+
+## 📊 Aperçu des Résultats
+Les graphiques de marée sont désormais sinusoïdaux grâce au modèle harmonique, et la température/vent sont lissés pour une meilleure lecture.
