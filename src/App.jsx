@@ -9,6 +9,7 @@ import Alerts from "../pages/Alerts";
 import Header from "../components/Header";
 import NotFound from "../pages/NotFound";
 import ForecastPAD from "../pages/ForecastPAD";
+import ForecastMINPAD from "../pages/ForecastMINPAD";
 import PADGraphics from "../pages/PADGraphics";
 import "leaflet/dist/leaflet.css";
 
@@ -66,6 +67,7 @@ export default function App() {
             <Route path="/forecast" element={<Forecast />} />
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/forecast-pad" element={<ForecastPAD />} />
+            <Route path="/forecast-minpad" element={<ForecastMINPAD />} />
             <Route path="/meteo-pad" element={<PADGraphics />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

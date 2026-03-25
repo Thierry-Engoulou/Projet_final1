@@ -98,16 +98,17 @@ export default function PADGraphics() {
 
   const cleanData = (chunks) => {
     if (!Array.isArray(chunks)) return [];
+    const round = (v) => isNaN(v) ? v : Number(v.toFixed(2));
     let res = chunks.map(d => ({
       DateTime: parseSafeDate(d.DateTime || d["DATE/TIME"] || d.Datetime || d.date),
       Station: d["STATION NAME"] || d.Station || d.station || "Inconnue",
-      TIDE_HEIGHT: parseFloat(d["TIDE HEIGHT"] || d["TIDE_HEIGHT"] || d.TIDE_HEIGHT || d.tide_height),
-      WIND_SPEED: parseFloat(d["WIND SPEED"] || d["WIND_SPEED"] || d.WIND_SPEED || d.wind_speed),
-      WIND_DIR: parseFloat(d["WIND DIR"] || d["WIND_DIR"] || d.WIND_DIR || d.wind_dir),
-      AIR_PRESSURE: parseFloat(d["AIR PRESSURE"] || d["AIR_PRESSURE"] || d.AIR_PRESSURE || d.air_pressure),
-      AIR_TEMPERATURE: parseFloat(d["AIR TEMPERATURE"] || d["AIR_TEMPERATURE"] || d.AIR_TEMPERATURE || d.air_temperature),
-      DEWPOINT: parseFloat(d.DEWPOINT || d.Dewpoint || d.dewpoint),
-      HUMIDITY_RELATIVE: parseFloat(d.HUMIDITY || d.HUMIDITY_RELATIVE || d.humidity || d.humidity_relative)
+      TIDE_HEIGHT: round(parseFloat(d["TIDE HEIGHT"] || d["TIDE_HEIGHT"] || d.TIDE_HEIGHT || d.tide_height)),
+      WIND_SPEED: round(parseFloat(d["WIND SPEED"] || d["WIND_SPEED"] || d.WIND_SPEED || d.wind_speed)),
+      WIND_DIR: round(parseFloat(d["WIND DIR"] || d["WIND_DIR"] || d.WIND_DIR || d.wind_dir)),
+      AIR_PRESSURE: round(parseFloat(d["AIR PRESSURE"] || d["AIR_PRESSURE"] || d.AIR_PRESSURE || d.air_pressure)),
+      AIR_TEMPERATURE: round(parseFloat(d["AIR TEMPERATURE"] || d["AIR_TEMPERATURE"] || d.AIR_TEMPERATURE || d.air_temperature)),
+      DEWPOINT: round(parseFloat(d.DEWPOINT || d.Dewpoint || d.dewpoint)),
+      HUMIDITY_RELATIVE: round(parseFloat(d.HUMIDITY || d.HUMIDITY_RELATIVE || d.humidity || d.humidity_relative))
     })).filter(d => d.DateTime && !isNaN(d.DateTime.getTime()));
     
     // Filtrage IQR pour chaque paramètre
@@ -162,7 +163,7 @@ export default function PADGraphics() {
       for (let j = Math.max(0, i - Math.floor(win / 2)); j <= Math.min(data.length - 1, i + Math.floor(win / 2)); j++) {
         if (!isNaN(data[j][p])) { sum += data[j][p]; count++; }
       }
-      res.push({ ...data[i], display_val: count > 0 ? sum / count : null });
+      res.push({ ...data[i], display_val: count > 0 ? Number((sum / count).toFixed(2)) : null });
     }
     return res;
   };
@@ -185,7 +186,7 @@ export default function PADGraphics() {
             // Courbe Sinusoïdale (Ligne)
             datasets.push({
               label: `${st} (Modèle)`,
-              data: dSt.map(d => ({ x: d.DateTime, y: modelFunc(d.DateTime.getTime()) })),
+              data: dSt.map(d => ({ x: d.DateTime, y: Number(modelFunc(d.DateTime.getTime()).toFixed(2)) })),
               borderColor: col, borderWidth: 3, pointRadius: 0, showLine: true, tension: 0.4
             });
           }
@@ -240,9 +241,11 @@ export default function PADGraphics() {
         </label>
       </div>
 
-      {/* MAIN */}
       <div className="flex-1 p-6 md:p-12 overflow-y-auto bg-slate-950">
-        <h1 className="text-4xl font-extrabold mb-8 tracking-tight text-white">Visualisation Scientifique PAD</h1>
+        <h1 className="text-4xl font-extrabold mb-4 tracking-tight text-white">Visualisation Scientifique PAD</h1>
+        <p className="text-blue-200/60 mb-8 italic text-sm">
+          Une analyse graphique avancée pour l'aide à la décision. Les relevés complets sont disponibles au téléchargement pour une exploitation approfondie.
+        </p>
         
         <div className="flex gap-10 border-b border-slate-800 mb-10 text-lg font-bold">
           <button className={`pb-4 transition-all ${activeTab === '1_day' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-gray-500 hover:text-gray-300'}`} onClick={() => setActiveTab('1_day')}>Aujourd'hui</button>

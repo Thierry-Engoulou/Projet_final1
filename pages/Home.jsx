@@ -48,24 +48,31 @@ export default function Home() {
         />
 
         <FeatureCard
-          href={"/alerts"}
-          icon={<FaExclamationTriangle size={40} className="text-red-500" />}
-          title="Alertes & Conseils"
-          description="Recevez des alertes sur les conditions météorologiques dangereuses accompagnées de recommandations d’experts."
+          href={"/meteo-pad"}
+          icon={<FaCloudSun size={40} className="text-purple-400" />}
+          title="Visualisation"
+          description="Affichez, comparez et manipulez les courbes météorologiques en haute résolution du Port Autonome."
         />
 
         <FeatureCard
           href={"/forecast-pad"}
           icon={<FaCloudSun size={40} className="text-blue-400" />}
           title="Forecast PAD"
-          description="Accédez aux bulletins de prévisions maritimes officiels du PAD au format PDF pour une navigation sécurisée."
+          description="Accédez aux bulletins de prévisions maritimes officiels du PAD au format PDF (Consultation uniquement)."
         />
 
         <FeatureCard
-          href={"/meteo-pad"}
-          icon={<FaCloudSun size={40} className="text-purple-400" />}
-          title="Visualisation du PAD"
-          description="Affichez, comparez et manipulez les courbes météorologiques en haute résolution du Port Autonome."
+          href={"/forecast-minpad"}
+          icon={<FaCloudSun size={40} className="text-orange-400" />}
+          title="Forecast MINPAD"
+          description="Consultez et téléchargez les bulletins météorologiques officiels du Ministère des Transports."
+        />
+
+        <FeatureCard
+          href={"/alerts"}
+          icon={<FaExclamationTriangle size={40} className="text-red-500" />}
+          title="Alertes & Conseils"
+          description="Recevez des alertes sur les conditions météorologiques dangereuses accompagnées de recommandations d’experts."
         />
       </section>
 
