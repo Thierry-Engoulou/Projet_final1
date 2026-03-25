@@ -37,6 +37,7 @@ export default function Sidebar() {
       "/forecast": "Forecast",
       "/alerts": "Alerts",
       "/forecast-pad": "Forecast PAD",
+      "/meteo-pad": "Visualisation du PAD",
     };
     document.title = `Meteo PAD - ${titles[location.pathname]}`;
   }, [location.pathname]);
@@ -90,6 +91,9 @@ export default function Sidebar() {
             <li>
               <Link to="/forecast-pad">Forecast PAD</Link>
             </li>
+            <li>
+              <Link to="/meteo-pad" className="text-blue-300 font-bold whitespace-nowrap">Visualisation du PAD</Link>
+            </li>
           </ul>
         )}
         <ul className={`hidden z-10 md:flex md:space-x-4 p-1`}>
@@ -110,6 +114,9 @@ export default function Sidebar() {
           </li>
           <li>
             <Link to="/forecast-pad">Forecast PAD</Link>
+          </li>
+          <li>
+            <Link to="/meteo-pad" className="text-blue-300 font-bold whitespace-nowrap">Visualisation du PAD</Link>
           </li>
         </ul>
       </nav>

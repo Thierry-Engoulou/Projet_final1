@@ -60,6 +60,13 @@ export default function Home() {
           title="Forecast PAD"
           description="Accédez aux bulletins de prévisions maritimes officiels du PAD au format PDF pour une navigation sécurisée."
         />
+
+        <FeatureCard
+          href={"/meteo-pad"}
+          icon={<FaCloudSun size={40} className="text-purple-400" />}
+          title="Visualisation du PAD"
+          description="Affichez, comparez et manipulez les courbes météorologiques en haute résolution du Port Autonome."
+        />
       </section>
 
       <footer className="mt-20 text-center text-gray-400 max-w-md">
