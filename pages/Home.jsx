@@ -51,7 +51,7 @@ export default function Home() {
           href={"/meteo-pad"}
           icon={<FaCloudSun size={40} className="text-purple-400" />}
           title="Visualisation"
-          description="Affichez, comparez et manipulez les courbes météorologiques en haute résolution du Port Autonome."
+          description="Affichez les courbes météo des stations et téléchargez les relevés complets du Port Autonome de Douala."
         />
 
         <FeatureCard

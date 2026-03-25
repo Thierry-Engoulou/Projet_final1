@@ -2,6 +2,10 @@ import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import Spinner from "../components/Spinner";
 import { format } from "date-fns";
+const round = (val) => {
+  const n = parseFloat(val);
+  return isNaN(n) ? (val || "-") : Number(n.toFixed(2));
+};
 
 function DataTable({ rows }) {
   if (!rows.length)
@@ -37,13 +41,13 @@ function DataTable({ rows }) {
             <td className="border border-sky-700 rounded-md text-center">{item["Latitude"]}</td>
             <td className="border border-sky-700 rounded-md text-center">{item["Longitude"]}</td>
             <td className="border border-sky-700 rounded-md text-center">{item["DateTime"]}</td>
-            <td className="border border-sky-700 rounded-md text-center">{item["TIDE HEIGHT"]}</td>
-            <td className="border border-sky-700 rounded-md text-center">{item["WIND SPEED"]}</td>
-            <td className="border border-sky-700 rounded-md text-center">{item["WIND DIR"]}</td>
-            <td className="border border-sky-700 rounded-md text-center">{item["AIR PRESSURE"]}</td>
-            <td className="border border-sky-700 rounded-md text-center">{item["AIR TEMPERATURE"]}</td>
-            <td className="border border-sky-700 rounded-md text-center">{item["DEWPOINT"]}</td>
-            <td className="border border-sky-700 rounded-md text-center">{item["HUMIDITY"]}</td>
+            <td className="border border-sky-700 rounded-md text-center">{round(item["TIDE HEIGHT"])}</td>
+            <td className="border border-sky-700 rounded-md text-center">{round(item["WIND SPEED"])}</td>
+            <td className="border border-sky-700 rounded-md text-center">{round(item["WIND DIR"])}</td>
+            <td className="border border-sky-700 rounded-md text-center">{round(item["AIR PRESSURE"])}</td>
+            <td className="border border-sky-700 rounded-md text-center">{round(item["AIR TEMPERATURE"])}</td>
+            <td className="border border-sky-700 rounded-md text-center">{round(item["DEWPOINT"])}</td>
+            <td className="border border-sky-700 rounded-md text-center">{round(item["HUMIDITY"])}</td>
           </tr>
         ))}
       </tbody>
@@ -120,18 +124,18 @@ function LiveData() {
                 🕒 Observation :{" "}
                 {format(new Date(row.DateTime), "yyyy-MM-dd HH:mm:ss")}
               </li>
-              <li>🌡️ Température : {row["AIR TEMPERATURE"]} °C</li>
-              <li>💧 Humidité : {row["HUMIDITY"]} %</li>
-              <li>💨 Vent : {row["WIND SPEED"]} m/s</li>
+              <li>🌡️ Température : {round(row["AIR TEMPERATURE"])} °C</li>
+              <li>💧 Humidité : {round(row["HUMIDITY"])} %</li>
+              <li>💨 Vent : {round(row["WIND SPEED"])} m/s</li>
               <li>
-                🧭 Direction du vent : {row["WIND DIR"]}° (
+                🧭 Direction du vent : {round(row["WIND DIR"])}° (
                 {getDirectionText(parseFloat(row["WIND DIR"]))})
               </li>
-              <li>⚖️ Pression : {row["AIR PRESSURE"]} hPa</li>
+              <li>⚖️ Pression : {round(row["AIR PRESSURE"])} hPa</li>
               {row["TIDE HEIGHT"] && (
-                <li>🌊 Marée : {row["TIDE HEIGHT"]} m</li>
+                <li>🌊 Marée : {round(row["TIDE HEIGHT"])} m</li>
               )}
-              {row["SURGE"] && <li>⚠️ SURGE : {row["SURGE"]} m</li>}
+              {row["SURGE"] && <li>⚠️ SURGE : {round(row["SURGE"])} m</li>}
             </ul>
           </div>
         ))}
