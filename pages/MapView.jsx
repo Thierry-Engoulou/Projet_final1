@@ -72,7 +72,7 @@ const MapView = ({ data }) => {
   return (
     <div className="relative">
       <MapContainer
-        center={[3.9, 9.5]}
+        center={[4.05, 9.68]}
         zoom={11}
         minZoom={9}
         maxZoom={14}
@@ -95,10 +95,20 @@ const MapView = ({ data }) => {
             />
           </BaseLayer>
 
-          {/* Overlay : Carte QGIS géoréférencée */}
+          {/* Overlay 1 : Carte QGIS (ancien fragment) */}
           <Overlay checked name="Carte port">
             <TileLayer
               url="/tiles/{z}/{x}/{y}.png"
+              maxZoom={14}
+              opacity={0.7}
+            />
+          </Overlay>
+
+          {/* Overlay 2 : Nouvelle carte Bulletin PAD */}
+          <Overlay checked name="Carte Bulletin PAD">
+            <TileLayer
+              url="/tiles_v2/{z}/{x}/{y}.png"
+              tms={true}
               maxZoom={14}
               opacity={0.7}
             />

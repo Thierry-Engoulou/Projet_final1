@@ -1,0 +1,35 @@
+# Procédure QGIS : Génération de tuiles XYZ (comme dans text_carte)
+
+Ce document décrit les étapes à suivre dans QGIS pour générer une structure de tuiles web similaire à celle présente dans le dossier `text_carte`.
+
+## Prérequis
+- Avoir QGIS installé.
+- Avoir une couche raster (image satellite, carte scannée, etc.) chargée dans QGIS.
+
+## Étapes dans QGIS
+
+### 1. Ouvrir la Boîte à outils de traitement
+- Allez dans le menu **Traitements** -> **Boîte à outils** (ou appuyez sur `Ctrl+Alt+T`).
+
+### 2. Rechercher l'outil de génération de tuiles
+- Dans la barre de recherche de la boîte à outils, tapez `XYZ`.
+- Double-cliquez sur l'outil **Générer des tuiles XYZ (Répertoire)** (ou *Generate XYZ tiles (Directory)* en anglais).
+
+### 3. Configurer l'outil
+Voici les paramètres à remplir (basés sur ce qui a été fait dans `text_carte`) :
+
+- **Emprise de calcul** : Cliquez sur les trois petits points `...` et choisissez **Calculer à partir de la couche** -> Sélectionnez votre couche raster.
+- **Zoom minimal** : Mettez `0` (ou une valeur basse).
+- **Zoom maximal** : Mettez `14` (c'est le niveau maximum trouvé dans votre dossier `text_carte`).
+- **DPI** : Laissez à `96` par défaut.
+- **Répertoire de sortie** : Choisissez un nouveau dossier vide sur votre ordinateur.
+- **Format des tuiles** : PNG (recommandé pour la transparence).
+- **Visionneuse** : Cochez **Leaflet**, **OpenLayers** et **Google Maps** si vous voulez générer les fichiers HTML ([leaflet.html](file:///c:/Users/RODRIGUE%20SINGOR/Desktop/QGIS/text_carte/tiles/leaflet.html), etc.) pour visualiser la carte dans un navigateur.
+
+### 4. Lancer le traitement
+- Cliquez sur **Exécuter**. QGIS va créer tous les sous-dossiers (`0`, `1`, `2`, ...) contenant les images découpées.
+
+## Vérification du résultat
+Une fois terminé, vous trouverez dans votre dossier de sortie :
+- Des dossiers numérotés correspondant aux niveaux de zoom.
+- Un fichier [leaflet.html](file:///c:/Users/RODRIGUE%20SINGOR/Desktop/QGIS/text_carte/tiles/leaflet.html) que vous pouvez ouvrir avec n'importe quel navigateur pour voir votre carte interactive.
