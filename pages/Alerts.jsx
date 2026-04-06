@@ -16,7 +16,17 @@ export default function AlertPage() {
         const parsed = JSON.parse(text);
 
         if (parsed.status === "success" && Array.isArray(parsed.data)) {
-          setAlerts(parsed.data);
+          const currentDayIndex = new Date().getDay();
+          const todayMap = currentDayIndex === 0 ? 7 : currentDayIndex;
+          const dayToNumber = { "lundi": 1, "mardi": 2, "mercredi": 3, "jeudi": 4, "vendredi": 5, "samedi": 6, "dimanche": 7 };
+          
+          const syncData = parsed.data.filter((item) => {
+            const dayName = item.days.trim().toLowerCase().split(" ")[0];
+            const matchedNumber = dayToNumber[dayName];
+            if (!matchedNumber) return true;
+            return matchedNumber >= todayMap;
+          });
+          setAlerts(syncData);
         } else {
           throw new Error("Format inattendu");
         }

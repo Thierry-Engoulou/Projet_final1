@@ -27,7 +27,6 @@ export default function Header() {
       "/forecast": "Forecast",
       "/alerts": "Alerts",
       "/forecast-pad": "Forecast PAD",
-      "/forecast-minpad": "Forecast MINPAD",
       "/meteo-pad": "Visualisation",
     };
     document.title = `Meteo PAD - ${titles[location.pathname]}`;
@@ -80,16 +79,16 @@ export default function Header() {
               <Link to="/live-data">Live Data</Link>
             </li>
             <li>
+              <Link to="/meteo-pad" className="text-blue-300 font-bold whitespace-nowrap">Visualisation</Link>
+            </li>
+            <li>
               <Link to="/forecast">Forecast</Link>
             </li>
             <li>
+              <Link to="/forecast-pad">Forecast PAD</Link>
+            </li>
+            <li>
               <Link to="/alerts">Alerts</Link>
-            </li>
-            <li>
-              <Link to="/forecast-minpad">Forecast MINPAD</Link>
-            </li>
-            <li>
-              <Link to="/meteo-pad" className="text-blue-300 font-bold whitespace-nowrap">Visualisation</Link>
             </li>
           </ul>
         )}
@@ -104,19 +103,16 @@ export default function Header() {
             <Link to="/live-data">Live Data</Link>
           </li>
           <li>
-            <Link to="/forecast">Forecast</Link>
+            <Link to="/meteo-pad" className="text-blue-300 font-bold whitespace-nowrap">Visualisation</Link>
           </li>
           <li>
-            <Link to="/alerts">Alerts</Link>
+            <Link to="/forecast">Forecast</Link>
           </li>
           <li>
             <Link to="/forecast-pad">Forecast PAD</Link>
           </li>
           <li>
-            <Link to="/forecast-minpad">Forecast MINPAD</Link>
-          </li>
-          <li>
-            <Link to="/meteo-pad" className="text-blue-300 font-bold whitespace-nowrap">Visualisation</Link>
+            <Link to="/alerts">Alerts</Link>
           </li>
         </ul>
       </nav>

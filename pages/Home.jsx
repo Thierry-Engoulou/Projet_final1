@@ -62,13 +62,6 @@ export default function Home() {
         />
 
         <FeatureCard
-          href={"/forecast-minpad"}
-          icon={<FaCloudSun size={40} className="text-orange-400" />}
-          title="Forecast MINPAD"
-          description="Consultez et téléchargez les bulletins météorologiques officiels du Ministère des Transports."
-        />
-
-        <FeatureCard
           href={"/alerts"}
           icon={<FaExclamationTriangle size={40} className="text-red-500" />}
           title="Alertes & Conseils"
