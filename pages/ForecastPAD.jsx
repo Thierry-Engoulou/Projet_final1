@@ -75,7 +75,11 @@ export default function ForecastPAD() {
   const getPdfEmbedUrl = (url) => {
     if (!url) return null;
     // Transform /raw/upload/ to /image/upload/ for proper Content-Type
-    return url.replace('/raw/upload/', '/image/upload/');
+    let newUrl = url.replace('/raw/upload/', '/image/upload/');
+    if (!newUrl.includes('#')) {
+      newUrl += '#toolbar=0&navpanes=0';
+    }
+    return newUrl;
   };
 
   const formatDate = (dateStr) =>
@@ -113,15 +117,21 @@ export default function ForecastPAD() {
               </button>
             </div>
 
-            {/* Affichage du PDF via embed */}
-            <div className="flex-1 w-full bg-slate-900 flex flex-col items-center">
-              <embed
+            {/* Affichage du PDF via iframe (sans la barre de téléchargement) */}
+            <div className="flex-1 w-full bg-slate-900 flex flex-col items-center relative">
+              <iframe
                 src={getPdfEmbedUrl(selectedDoc.urlFichier)}
-                type="application/pdf"
-                className="w-full h-full border-none flex-1"
+                className="w-full h-full border-none flex-1 bg-white"
+                title={selectedDoc.nom}
               />
-              <div className="p-4 w-full text-center bg-slate-900/80 backdrop-blur-sm">
-                <p className="text-gray-400 mb-2 italic">Consultation protégée — Reproduction et téléchargement interdits</p>
+              {/* Couche de protection transparente pour éviter le clic droit simple sur l'iframe */}
+              <div 
+                className="absolute inset-x-0 inset-y-0 z-10" 
+                onContextMenu={(e) => e.preventDefault()}
+                style={{ pointerEvents: 'none' }}
+              />
+              <div className="p-4 w-full text-center bg-slate-900/90 backdrop-blur-sm shadow-[0_-10px_30px_rgba(0,0,0,0.5)] z-20">
+                <p className="text-gray-300 italic text-sm">Consultation protégée — Reproduction et téléchargement interdits</p>
               </div>
             </div>
           </motion.div>
@@ -306,12 +316,17 @@ export default function ForecastPAD() {
                   </button>
                 </div>
 
-                {/* Aperçu PDF intégré (visible directement sur la page) */}
-                <div className="w-full bg-slate-900" style={{ height: "500px" }}>
-                  <embed
+                {/* Aperçu PDF intégré via iframe (sans barre téléchargement) */}
+                <div className="w-full bg-slate-900 flex flex-col relative group/pdf" style={{ height: "500px" }}>
+                  <iframe
                     src={getPdfEmbedUrl(doc.urlFichier)}
-                    type="application/pdf"
-                    className="w-full h-full border-none"
+                    className="w-full h-full border-none bg-white"
+                    title={doc.nom}
+                  />
+                  {/* Calque pour empêcher le téléchargement direct au survol */}
+                  <div 
+                    className="absolute inset-x-0 inset-y-0 z-10 pointer-events-none" 
+                    onContextMenu={(e) => e.preventDefault()}
                   />
                 </div>
 

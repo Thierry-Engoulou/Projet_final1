@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Tooltip, LayersControl } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -17,6 +17,7 @@ const STATIONS_COORDS = {
 const STATIONS_HORS_SERVICE = ["SM 1", "SM 4"];
 
 const MapView = ({ data }) => {
+  const [isLegendOpen, setIsLegendOpen] = useState(false);
 
   const cleanValue = (v) => {
     if (v === null || v === undefined) return "—";
@@ -219,25 +220,37 @@ const MapView = ({ data }) => {
 
       {/* Légende — Aide à la Navigation + Vent */}
       <div
-        className="absolute bottom-4 left-4 z-[400] bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden"
-        style={{ minWidth: 210, maxHeight: "85vh", overflowY: "auto", fontSize: 11 }}
+        className="absolute bottom-4 left-4 z-[400] bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden transition-all duration-300"
+        style={{ minWidth: isLegendOpen ? 210 : "auto", maxHeight: "85vh", overflowY: "auto", fontSize: 11 }}
       >
 
-        {/* En-tête — Aide à la Navigation */}
-        <div className="bg-[#0f2d5e] text-white px-3 py-2 flex items-center gap-2">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="8" x2="12" y2="12"/>
-            <line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
-          <div>
-            <p className="font-extrabold tracking-wide text-xs">AIDE À LA NAVIGATION</p>
-            <p className="text-blue-200 leading-none" style={{ fontSize: 9 }}>Carte officielle du Port de Douala</p>
+        {/* En-tête — Aide à la Navigation (Togglable) */}
+        <div 
+          className="bg-[#0f2d5e] text-white px-3 py-2 flex items-center justify-between gap-3 cursor-pointer select-none hover:bg-[#1a3d75] transition-colors"
+          onClick={() => setIsLegendOpen(!isLegendOpen)}
+          title="Afficher/Masquer la légende"
+        >
+          <div className="flex items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <div className="flex flex-col">
+              <p className="font-extrabold tracking-wide text-xs">LÉGENDE / AIDE</p>
+              {isLegendOpen && (
+                <p className="text-blue-200 leading-none mt-0.5" style={{ fontSize: 9 }}>Carte du Port de Douala</p>
+              )}
+            </div>
+          </div>
+          <div className="text-white text-xs opacity-70">
+            {isLegendOpen ? "▼" : "▲"}
           </div>
         </div>
 
         {/* Corps de la légende */}
-        <div className="p-3">
+        {isLegendOpen && (
+          <div className="p-3">
 
           {/* Vitesse du vent */}
           <p className="font-bold text-gray-500 mb-1.5 uppercase tracking-widest" style={{ fontSize: 9 }}>⚡ Vitesse du vent</p>
@@ -299,11 +312,12 @@ const MapView = ({ data }) => {
             <span className="text-red-600 font-semibold">Station hors service</span>
           </div>
 
-          {/* Footer */}
+        {/* Footer */}
           <p className="text-gray-300 text-center mt-3 border-t border-gray-100 pt-2" style={{ fontSize: 8 }}>
             🛟 Port Autonome de Douala — MeteoMarinePAD
           </p>
         </div>
+        )}
       </div>
 
     </div>
