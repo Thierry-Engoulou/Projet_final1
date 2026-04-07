@@ -239,10 +239,22 @@ export default function PADGraphics() {
           <input type="checkbox" checked={noDownsample} onChange={e => setNoDownsample(e.target.checked)} />
           Haute Résolution (Sans échantillonnage)
         </label>
+
+        <div className="mt-8 p-4 bg-blue-800/50 rounded-xl text-center border border-blue-500/30">
+          <h4 className="text-sm font-bold text-blue-200 mb-2">Besoin des données brutes ?</h4>
+          <a
+            href="https://padgrah.onrender.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-3 rounded-lg transition-colors"
+          >
+            TÉLÉCHARGER
+          </a>
+        </div>
       </div>
 
       <div className="flex-1 p-6 md:p-12 overflow-y-auto bg-slate-950">
-        <h1 className="text-4xl font-extrabold mb-4 tracking-tight text-white">Visualisation Scientifique PAD</h1>
+        <h1 className="text-4xl font-extrabold mb-4 tracking-tight text-white">Graphiques</h1>
         <p className="text-blue-200/60 mb-8 italic text-sm">
           Une analyse graphique avancée pour l'aide à la décision. Les relevés complets sont disponibles au téléchargement pour une exploitation approfondie.
         </p>
@@ -296,19 +308,6 @@ export default function PADGraphics() {
                   {renderGraphs(activeTab === '1_day' ? data1d : data7d)}
                </div>
 
-               {/* FOOTER DOWNLOAD */}
-               <div className="mt-20 p-10 bg-blue-600 rounded-3xl text-center shadow-2xl shadow-blue-500/20">
-                  <h3 className="text-2xl font-black mb-4">Besoin des données brutes ?</h3>
-                  <p className="text-blue-100 mb-8 max-w-2xl mx-auto">Pour télécharger les relevés complets au format Excel ou NetCDF, veuillez utiliser notre portail sécurisé de téléchargement.</p>
-                  <a 
-                    href="https://padgrah.onrender.com/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-block bg-white text-blue-600 px-10 py-4 rounded-2xl font-black text-lg hover:bg-slate-100 transition-all active:scale-95 shadow-xl"
-                  >
-                    🚀 CLIQUER ICI POUR TÉLÉCHARGER
-                  </a>
-               </div>
             </section>
           )}
         </div>

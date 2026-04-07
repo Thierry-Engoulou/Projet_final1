@@ -21,13 +21,13 @@ export default function Header() {
   // set the document title based on the current route
   useEffect(() => {
     const titles = {
-      "/": "Home",
-      "/map": "Map View",
-      "/live-data": "Live Data",
-      "/forecast": "Forecast",
-      "/alerts": "Alerts",
-      "/forecast-pad": "Forecast PAD",
-      "/meteo-pad": "Visualisation",
+      "/": "Accueil",
+      "/map": "Carte",
+      "/live-data": "Données",
+      "/meteo-pad": "Graphes",
+      "/forecast": "Météo PAD 7J",
+      "/forecast-pad": "Bulletin PAD Quotidien",
+      "/alerts": "Alertes",
     };
     document.title = `Meteo PAD - ${titles[location.pathname]}`;
   }, [location.pathname]);
@@ -69,50 +69,50 @@ export default function Header() {
           >
             <li>
               <Link to="/" className="">
-                Home
+                Accueil
               </Link>
             </li>
             <li>
-              <Link to="/map">Map View</Link>
+              <Link to="/map">Carte</Link>
             </li>
             <li>
-              <Link to="/live-data">Live Data</Link>
+              <Link to="/live-data">Données</Link>
             </li>
             <li>
-              <Link to="/meteo-pad" className="text-blue-300 font-bold whitespace-nowrap">Visualisation</Link>
+              <Link to="/meteo-pad" className="text-blue-300 font-bold whitespace-nowrap">Graphes</Link>
             </li>
             <li>
-              <Link to="/forecast">Forecast</Link>
+              <Link to="/forecast">Météo PAD 7J</Link>
             </li>
             <li>
-              <Link to="/forecast-pad">Forecast PAD</Link>
+              <Link to="/forecast-pad">Bulletin PAD Quotidien</Link>
             </li>
             <li>
-              <Link to="/alerts">Alerts</Link>
+              <Link to="/alerts">Alertes</Link>
             </li>
           </ul>
         )}
         <ul className={`hidden z-10 md:flex md:space-x-4 p-1`}>
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/">Accueil</Link>
           </li>
           <li>
-            <Link to="/map">Map View</Link>
+            <Link to="/map">Carte</Link>
           </li>
           <li>
-            <Link to="/live-data">Live Data</Link>
+            <Link to="/live-data">Données</Link>
           </li>
           <li>
-            <Link to="/meteo-pad" className="text-blue-300 font-bold whitespace-nowrap">Visualisation</Link>
+            <Link to="/meteo-pad" className="text-blue-300 font-bold whitespace-nowrap">Graphes</Link>
           </li>
           <li>
-            <Link to="/forecast">Forecast</Link>
+            <Link to="/forecast">Météo PAD 7J</Link>
           </li>
           <li>
-            <Link to="/forecast-pad">Forecast PAD</Link>
+            <Link to="/forecast-pad">Bulletin PAD Quotidien</Link>
           </li>
           <li>
-            <Link to="/alerts">Alerts</Link>
+            <Link to="/alerts">Alertes</Link>
           </li>
         </ul>
       </nav>

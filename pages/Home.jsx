@@ -29,42 +29,42 @@ export default function Home() {
 
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-5xl w-full">
         <FeatureCard
-          href={"/forecast"}
-          icon={<FaCloudSun size={40} className="text-yellow-400" />}
-          title="Prévisions Précises"
-          description="Consultez les prévisions météorologiques pour les jours à venir avec des données fiables et régulièrement mises à jour."
-        />
-        <FeatureCard
           href={"/map"}
           icon={<FaMapMarkedAlt size={40} className="text-cyan-400" />}
-          title="Cartes Interactives"
+          title="Carte"
           description="Visualisez les stations météo du PAD (SM1,SM2,SM3,SM4) sur une carte interactive pour mieux comprendre les conditions locales."
         />
         <FeatureCard
           href={"/live-data"}
           icon={<FaDatabase size={40} className="text-green-400" />}
-          title="Données En Temps Réel"
+          title="Données"
           description="Accédez aux données météorologiques actualisées en temps réel des stations de surveillance du PAD."
         />
-
         <FeatureCard
           href={"/meteo-pad"}
           icon={<FaCloudSun size={40} className="text-purple-400" />}
-          title="Visualisation"
+          title="Graphes"
           description="Affichez les courbes météo des stations et téléchargez les relevés complets du Port Autonome de Douala."
+        />
+
+        <FeatureCard
+          href={"/forecast"}
+          icon={<FaCloudSun size={40} className="text-yellow-400" />}
+          title="Météo PAD 7J"
+          description="Consultez les prévisions météorologiques pour les 7 prochains jours avec des données fiables et régulièrement mises à jour."
         />
 
         <FeatureCard
           href={"/forecast-pad"}
           icon={<FaCloudSun size={40} className="text-blue-400" />}
-          title="Forecast PAD"
-          description="Accédez aux bulletins de prévisions maritimes officiels du PAD au format PDF (Consultation uniquement)."
+          title="Bulletin PAD Quotidien"
+          description="Accédez aux bulletins officiels du PAD, très détaillés sur les prévisions du jour, au format PDF (Consultation uniquement)."
         />
 
         <FeatureCard
           href={"/alerts"}
           icon={<FaExclamationTriangle size={40} className="text-red-500" />}
-          title="Alertes & Conseils"
+          title="Alertes"
           description="Recevez des alertes sur les conditions météorologiques dangereuses accompagnées de recommandations d’experts."
         />
       </section>

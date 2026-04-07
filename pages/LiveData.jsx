@@ -38,8 +38,8 @@ function DataTable({ rows }) {
           <tr key={item._id}>
             <td className="border border-sky-700 rounded-md text-center">{index + 1}</td>
             <td className="border border-sky-700 rounded-md text-center">{item["Station"]}</td>
-            <td className="border border-sky-700 rounded-md text-center">{item["Latitude"]}</td>
-            <td className="border border-sky-700 rounded-md text-center">{item["Longitude"]}</td>
+            <td className="border border-sky-700 rounded-md text-center">{round(item["Latitude"])}</td>
+            <td className="border border-sky-700 rounded-md text-center">{round(item["Longitude"])}</td>
             <td className="border border-sky-700 rounded-md text-center">{item["DateTime"]}</td>
             <td className="border border-sky-700 rounded-md text-center">{round(item["TIDE HEIGHT"])}</td>
             <td className="border border-sky-700 rounded-md text-center">{round(item["WIND SPEED"])}</td>
