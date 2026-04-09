@@ -8,7 +8,7 @@ import 'chartjs-adapter-date-fns';
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, TimeScale);
 
-const API_URL = "https://data-real-time-6.onrender.com/donnees";
+const API_URL = "https://data-real-time-2.onrender.com/donnees";
 const STATION_COLORS = { "SM 2": "rgba(54, 162, 235, 1)", "SM 3": "rgba(255, 99, 132, 1)", "SM 4": "rgba(75, 192, 192, 1)" };
 const params_list = ["TIDE_HEIGHT", "WIND_SPEED", "WIND_DIR", "AIR_PRESSURE", "AIR_TEMPERATURE", "DEWPOINT", "HUMIDITY_RELATIVE"];
 

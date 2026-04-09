@@ -61,7 +61,7 @@ function LiveData() {
 
   useEffect(() => {
     axios
-      .get("https://data-real-time-6.onrender.com/donnees?limit=20")
+      .get("https://data-real-time-2.onrender.com/donnees?limit=20")
       .then((res) => setData(res.data))
       .catch((err) => console.error(err));
   }, []);

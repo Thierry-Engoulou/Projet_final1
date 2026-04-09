@@ -20,7 +20,7 @@ export default function App() {
   const fetchWeatherData = async () => {
     try {
       const response = await fetch(
-        "https://data-real-time-6.onrender.com/donnees"
+        "https://data-real-time-2.onrender.com/donnees"
       );
       if (!response.ok) throw new Error("Network response was not ok");
 
