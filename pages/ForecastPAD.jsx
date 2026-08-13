@@ -340,6 +340,7 @@ export default function ForecastPAD() {
                       Lire le bulletin
                     </button>
                   </div>
+                </div>
 
                 {/* Aperçu PDF intégré via iframe (sans barre téléchargement) */}
                 <div className="w-full bg-slate-900 flex flex-col relative group/pdf" style={{ height: "500px" }}>
