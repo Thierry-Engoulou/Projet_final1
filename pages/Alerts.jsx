@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { FaExclamationTriangle, FaCheckCircle } from "react-icons/fa";
 import { MdHealthAndSafety } from "react-icons/md";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, mapValue } from "framer-motion";
+import { p } from "framer-motion/client";
 
 export default function AlertPage() {
   const [alerts, setAlerts] = useState([]);
@@ -127,3 +128,7 @@ export default function AlertPage() {
     </div>
   );
 }
+
+
+
+

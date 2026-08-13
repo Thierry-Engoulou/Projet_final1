@@ -13,8 +13,7 @@ const STATIONS_COORDS = {
   "SM 4": { lat: 4.0539, lon: 9.6857 },
 };
 
-// Stations hors service (pas de données temps réel)
-const STATIONS_HORS_SERVICE = ["SM 1", "SM 4"];
+// Les stations hors service sont maintenant déterminées dynamiquement (si aucune donnée n'est reçue)
 
 const MapView = ({ data }) => {
   const [isLegendOpen, setIsLegendOpen] = useState(false);
@@ -137,8 +136,9 @@ const MapView = ({ data }) => {
           {/* Overlay : Aide à la Navigation – toutes les stations */}
           <Overlay checked name="Aide à la Navigation">
             {Object.entries(STATIONS_COORDS).map(([stationName, coords]) => {
-              const isHorsService = STATIONS_HORS_SERVICE.includes(stationName);
               const record = latestPerStation[stationName];
+              // Une station est considérée hors service si elle ne renvoie aucune donnée récente
+              const isHorsService = !record;
 
               if (isHorsService) {
                 // Station hors service : icône grise + popup maintenance

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaCloudUploadAlt, FaFilePdf, FaLock, FaUnlock, FaCalendarAlt, FaTimes } from "react-icons/fa";
+import { FaCloudUploadAlt, FaFilePdf, FaLock, FaUnlock, FaCalendarAlt, FaTimes, FaDownload } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
 const API_BASE_URL = "https://api-pdf-6s00.onrender.com/api";
@@ -109,12 +109,24 @@ export default function ForecastPAD() {
                 <FaFilePdf className="text-red-400 text-xl" />
                 <span className="font-semibold text-lg truncate max-w-md">{selectedDoc.nom}</span>
               </div>
-              <button
-                onClick={() => setSelectedDoc(null)}
-                className="p-2 rounded-full bg-slate-700 hover:bg-red-600 transition-colors"
-              >
-                <FaTimes />
-              </button>
+              <div className="flex items-center gap-4">
+                {isAdmin && (
+                  <a
+                    href={selectedDoc.urlFichier}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-full text-sm font-semibold transition-colors"
+                  >
+                    <FaDownload /> Télécharger
+                  </a>
+                )}
+                <button
+                  onClick={() => setSelectedDoc(null)}
+                  className="p-2 rounded-full bg-slate-700 hover:bg-red-600 transition-colors"
+                >
+                  <FaTimes />
+                </button>
+              </div>
             </div>
 
             {/* Affichage du PDF via iframe (sans la barre de téléchargement) */}
@@ -306,15 +318,28 @@ export default function ForecastPAD() {
                     </div>
                   </div>
 
-                  {/* Bouton pour ouvrir le lecteur plein écran */}
-                  <button
-                    onClick={() => setSelectedDoc(doc)}
-                    className="hidden md:flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white
-                      border border-blue-500/40 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300"
-                  >
-                    Lire le bulletin
-                  </button>
-                </div>
+                  {/* Boutons d'action */}
+                  <div className="hidden md:flex items-center gap-3">
+                    {isAdmin && (
+                      <a
+                        href={doc.urlFichier}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white
+                          border border-emerald-500/40 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300"
+                        title="Télécharger (Admin)"
+                      >
+                        <FaDownload />
+                      </a>
+                    )}
+                    <button
+                      onClick={() => setSelectedDoc(doc)}
+                      className="flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white
+                        border border-blue-500/40 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300"
+                    >
+                      Lire le bulletin
+                    </button>
+                  </div>
 
                 {/* Aperçu PDF intégré via iframe (sans barre téléchargement) */}
                 <div className="w-full bg-slate-900 flex flex-col relative group/pdf" style={{ height: "500px" }}>
